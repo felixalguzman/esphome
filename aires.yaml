@@ -16,7 +16,7 @@ api:
     key: "8+gKtrp4QvFEa2tGW+0a0XFW20RBbtyBX7XON5FF798="
 
 ota:
-  password: "7679522708666d0e86c3b89739a0e755"
+  password: "c0c8249a9067dade22f8187c5af7b94f"
 
 wifi:
   ssid: !secret wifi_ssid

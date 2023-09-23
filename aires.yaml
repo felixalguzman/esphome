@@ -27,39 +27,53 @@ wifi:
     ssid: "Aires Fallback Hotspot"
     password: "lZpog56gemhE"
 # Example configuration entry
-globals:
-  - id: aire_global
-    type: 'bool'
-    restore_value: no
-    initial_value: 'false'
+# globals:
+#   - id: aire_global
+#     type: 'bool'
+#     restore_value: no
+#     initial_value: 'false'
 # Example configuration entry
+# binary_sensor:
+#   - platform: gpio
+#     pin: GPIO41
+#     name: "Living Room Window"
+#     on_press:
+#       # min_length: 1ms
+#       # max_length: 49ms
+#       then:
+#         - remote_transmitter.transmit_coolix:
+#             first: 0xB27BE0
+#           # - id(aire_global) = false;
+#     on_double_click:
+#       min_length: 50ms
+#       max_length: 350ms
+#       then:
+#         - remote_transmitter.transmit_coolix:
+#             first: 0b0000
+#         # - id(aire_global) = true;
+
 binary_sensor:
   - platform: gpio
-    pin: GPIO41
-    name: "Living Room Window"
-    on_click:
-      min_length: 1ms
-      max_length: 49ms
+    name: Button
+    pin:
+      number: GPIO41
+    on_press:
       then:
         - remote_transmitter.transmit_coolix:
-            first: 0xB27BE0
-          # - id(aire_global) = false;
-    on_double_click:
-      min_length: 50ms
-      max_length: 350ms
-      then:
-        - remote_transmitter.transmit_coolix:
-            first: 0b0000
-        # - id(aire_global) = true;
-
+            first: 0xB21F98
+        - logger.log: Button Pressed niuce
 
 captive_portal:
 remote_transmitter:
   pin: GPIO2
   carrier_duty_percent: 50%
 
+# remote_receiver:
+#   pin: GPIO1
+#   carrier_duty_percent: 50%
+
 climate:
-  - platform: coolix       # adjust to match your AC unit!
-    name: "alice_leti"
+  - platform: coolix # adjust to match your AC unit!
+    name: "Aire Alice y Leti"
 web_server:
-    port: 80
+  port: 80

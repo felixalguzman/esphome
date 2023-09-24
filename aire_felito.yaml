@@ -63,6 +63,6 @@ remote_transmitter:
 climate:
   - platform: coolix # adjust to match your AC unit!\
     id: "aire"
-    name: "Aire Alice y Leti"
+    name: "Aire Felito"
 web_server:
   port: 80

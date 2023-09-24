@@ -13,10 +13,10 @@ logger:
 # Enable Home Assistant API
 api:
   encryption:
-    key: "Dv/Htvi+tCOtaATOcRcxVJdsF84vtf3QDsaOQh6ylUk="
+    key: "8+gKtrp4QvFEa2tGW+0a0XFW20RBbtyBX7XON5FF798="
 
 ota:
-  password: "464464a6c630ea65443b303246bdacf5"
+  password: "c0c8249a9067dade22f8187c5af7b94f"
 
 wifi:
   ssid: !secret wifi_ssid
@@ -24,15 +24,15 @@ wifi:
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
-    ssid: "Aire-Felito Fallback Hotspot"
-    password: "GtoauumEiXwu"
+    ssid: "Aires Fallback Hotspot"
+    password: "lZpog56gemhE"
 
-captive_portal:
 binary_sensor:
   - platform: gpio
     name: Button
     pin:
       number: GPIO41
+      # inverted: true
       mode:
         input: true
         pullup: true
@@ -40,19 +40,28 @@ binary_sensor:
       then:
         if:
           condition:
-            lambda: "return id(aire1).mode==CLIMATE_MODE_OFF;"
+            lambda: "return id(aire).mode==CLIMATE_MODE_OFF;"
           then:
             climate.control:
-              id: aire1
+              id: aire
               mode: "COOL"
           else:
             climate.control:
-              id: aire1
+              id: aire
               mode: "OFF"
+
+captive_portal:
+remote_transmitter:
+  pin: GPIO2
+  carrier_duty_percent: 50%
+
+# remote_receiver:
+#   pin: GPIO1
+#   carrier_duty_percent: 50%
 
 climate:
   - platform: coolix # adjust to match your AC unit!\
-    id: "aire1"
-    name: "Aire Felito"
+    id: "aire"
+    name: "Aire Alice y Leti"
 web_server:
   port: 80

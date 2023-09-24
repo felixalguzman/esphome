@@ -29,14 +29,31 @@ wifi:
     password: "GtoauumEiXwu"
 
 captive_portal:
+binary_sensor:
+  - platform: gpio
+    name: Button
+    pin:
+      number: GPIO41
+      mode:
+        input: true
+        pullup: true
+    on_press:
+      then:
+        if:
+          condition:
+            lambda: "return id(aire).mode==CLIMATE_MODE_OFF;"
+          then:
+            climate.control:
+              id: aire
+              mode: "COOL"
+          else:
+            climate.control:
+              id: aire
+              mode: "OFF"
 
-remote_receiver:
-  id: "rece"
-  pin:
-    number: GPIO1
-    inverted: True
-  dump: all
-  on_coolix:
-    - logger.log:
-        format: "The tdata received %s"
-        args: ["id(rece).state"]
+climate:
+  - platform: coolix # adjust to match your AC unit!\
+    id: "aire"
+    name: "Aire Felito"
+web_server:
+  port: 80

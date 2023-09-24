@@ -45,6 +45,7 @@ binary_sensor:
             climate.control:
               id: aire
               mode: "COOL"
+              target_temperature: 19
           else:
             climate.control:
               id: aire

@@ -9,7 +9,6 @@ esp32:
 
 # Enable logging
 logger:
-  level: DEBUG
 
 # Enable Home Assistant API
 api:
@@ -41,19 +40,19 @@ binary_sensor:
       then:
         if:
           condition:
-            lambda: "return id(aire).mode==CLIMATE_MODE_OFF;"
+            lambda: "return id(aire1).mode==CLIMATE_MODE_OFF;"
           then:
             climate.control:
-              id: aire
+              id: aire1
               mode: "COOL"
           else:
             climate.control:
-              id: aire
+              id: aire1
               mode: "OFF"
 
 climate:
   - platform: coolix # adjust to match your AC unit!\
-    id: "aire"
+    id: "aire1"
     name: "Aire Felito"
 web_server:
   port: 80

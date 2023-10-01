@@ -1,0 +1,53 @@
+esphome:
+  name: home-theather
+  friendly_name: home_theather
+
+esp32:
+  board: esp32-s3-devkitc-1
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "+xa2I2DwchmS+6fHpWll83LfwDZzGVKGnAuLD0jUNuI="
+
+ota:
+  password: "b383aeda88a21c8f911c33fd582c8a5b"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Home-Theather Fallback Hotspot"
+    password: "GkJXPwcppsfs"
+
+captive_portal:
+
+external_components:
+  - source: github://Jorre05/remote_receiver
+    components: [remote_receiver]
+
+remote_receiver:
+  pin:
+    number: GPIO1
+    inverted: true
+  rmt_channel: 4
+  dump: all
+
+remote_transmitter:
+  pin: GPIO2
+  carrier_duty_percent: 50%
+
+switch:
+  - platform: template
+    name: "Home Theather"
+    turn_on_action:
+      remote_transmitter.transmit_rc6:
+        address: 0x1F
+        command: 0x3F

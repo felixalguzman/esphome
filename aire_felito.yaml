@@ -68,6 +68,7 @@ light:
   - platform: binary
     name: "AC Light"
     output: light_output
+    restore_mode: RESTORE_AND_OFF 
 
 output:
   - id: light_output

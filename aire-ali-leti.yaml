@@ -1,5 +1,5 @@
 esphome:
-  name: aires
+  name: "aire-ali-leti"
   friendly_name: Aires
 
 esp32:
@@ -54,6 +54,8 @@ light:
   - platform: binary
     name: "AC Light"
     output: light_output
+    restore_mode: RESTORE_AND_OFF 
+
 
 output:
   - id: light_output

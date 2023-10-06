@@ -50,10 +50,16 @@ binary_sensor:
               id: aire
               mode: "OFF"
 
-button:
-  - platform: template
-    name: "Toogle light"
-    on_press:
+light:
+  - platform: binary
+    name: "AC Light"
+    output: light_output
+
+output:
+  - id: light_output
+    platform: template
+    type: binary
+    write_action:
       remote_transmitter.transmit_coolix:
         first: 0xB5F5A5
         second: 0xB5F5A5

@@ -14,6 +14,12 @@ logger:
 api:
   encryption:
     key: "8+gKtrp4QvFEa2tGW+0a0XFW20RBbtyBX7XON5FF798="
+  services:
+    - service: toggle_light
+      then:
+        - remote_transmitter.transmit_coolix:
+            first: 0xB5F5A5
+            second: 0xB5F5A5
 
 ota:
   password: "c0c8249a9067dade22f8187c5af7b94f"
@@ -50,11 +56,24 @@ binary_sensor:
             climate.control:
               id: aire
               mode: "OFF"
+  # - platform: template
+  #   name: "Toogle light"
+  #   icon: "mdi:lightbulb"
+  #   on_press:
+  #     remote_transmitter.transmit_coolix:
+  #       first: 0xB5F5A5
+  #       second: 0xB5F5A5
 
-button:
-  - platform: template
-    name: "Toogle light"
-    on_press:
+light:
+  - platform: binary
+    name: "AC Light"
+    output: light_output
+
+output:
+  - id: light_output
+    platform: template
+    type: binary
+    write_action: 
       remote_transmitter.transmit_coolix:
         first: 0xB5F5A5
         second: 0xB5F5A5
@@ -64,19 +83,19 @@ remote_transmitter:
   pin: GPIO2
   carrier_duty_percent: 50%
 
-external_components:
-  - source: github://Jorre05/remote_receiver
-    components: [remote_receiver]
+# external_components:
+#   - source: github://Jorre05/remote_receiver
+#     components: [remote_receiver]
 
-remote_receiver:
-  pin:
-    number: GPIO1
-    inverted: true
-    mode:
-      input: true
-      pullup: true
-  rmt_channel: 4
-  dump: coolix
+# remote_receiver:
+#   pin:
+#     number: GPIO1
+#     inverted: true
+#     mode:
+#       input: true
+#       pullup: true
+#   rmt_channel: 4
+#   dump: coolix
 
 climate:
   - platform: coolix # adjust to match your AC unit!\

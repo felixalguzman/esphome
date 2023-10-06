@@ -50,6 +50,14 @@ binary_sensor:
               id: aire
               mode: "OFF"
 
+button:
+  - platform: template
+    name: "Toogle light"
+    on_press:
+      remote_transmitter.transmit_coolix:
+        first: 0xB5F5A5
+        second: 0xB5F5A5
+
 captive_portal:
 remote_transmitter:
   pin: GPIO2

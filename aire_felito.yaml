@@ -51,14 +51,32 @@ binary_sensor:
               id: aire
               mode: "OFF"
 
+button:
+  - platform: template
+    name: "Toogle light"
+    on_press:
+      remote_transmitter.transmit_coolix:
+        first: 0xB5F5A5
+        second: 0xB5F5A5
+
 captive_portal:
 remote_transmitter:
   pin: GPIO2
   carrier_duty_percent: 50%
 
-# remote_receiver:
-#   pin: GPIO1
-#   carrier_duty_percent: 50%
+external_components:
+  - source: github://Jorre05/remote_receiver
+    components: [remote_receiver]
+
+remote_receiver:
+  pin:
+    number: GPIO1
+    inverted: true
+    mode:
+      input: true
+      pullup: true
+  rmt_channel: 4
+  dump: coolix
 
 climate:
   - platform: coolix # adjust to match your AC unit!\

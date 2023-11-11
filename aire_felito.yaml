@@ -48,14 +48,15 @@ binary_sensor:
           condition:
             lambda: "return id(aire).mode==CLIMATE_MODE_OFF;"
           then:
-            climate.control:
-              id: aire
-              mode: "COOL"
-              target_temperature: 19
+            - climate.control:
+                id: aire
+                mode: "COOL"
+                target_temperature: 19
+
           else:
-            climate.control:
-              id: aire
-              mode: "OFF"
+            - climate.control:
+                id: aire
+                mode: "OFF"
   # - platform: template
   #   name: "Toogle light"
   #   icon: "mdi:lightbulb"
@@ -66,15 +67,17 @@ binary_sensor:
 
 light:
   - platform: binary
+    id: ac_light
     name: "AC Light"
     output: light_output
-    restore_mode: RESTORE_AND_OFF 
+    restore_mode: RESTORE_AND_OFF
 
 output:
   - id: light_output
     platform: template
     type: binary
-    write_action: 
+    # inverted: true
+    write_action:
       remote_transmitter.transmit_coolix:
         first: 0xB5F5A5
         second: 0xB5F5A5
@@ -102,5 +105,14 @@ climate:
   - platform: coolix # adjust to match your AC unit!\
     id: "aire"
     name: "Aire Felito"
+    on_state:
+      - lambda: |-
+          if (x.mode != CLIMATE_MODE_OFF) {
+            id(ac_light).turn_on();
+          }else {
+            id(ac_light).turn_off();
+
+          }
+
 web_server:
   port: 80

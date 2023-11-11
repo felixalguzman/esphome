@@ -61,6 +61,7 @@ output:
   - id: light_output
     platform: template
     type: binary
+    inverted: true
     write_action:
       remote_transmitter.transmit_coolix:
         first: 0xB5F5A5

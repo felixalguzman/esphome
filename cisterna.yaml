@@ -58,16 +58,16 @@ binary_sensor:
     id: button_1
     on_press:
       then:
-        - light.toggle: light_1
+        - switch.toggle: light_1
 
 output:
   - platform: gpio
     pin: GPIO4
     id: relay_1
 
-light:
-  - platform: binary
-    name: Light
+switch:
+  - platform: output
+    name: Cisterna
     id: light_1
     output: relay_1
     icon: mdi:water-pump

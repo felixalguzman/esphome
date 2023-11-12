@@ -58,15 +58,15 @@ binary_sensor:
     id: button_1
     on_press:
       then:
-        - switch.toggle: light_1
+        - light.toggle: light_1
 
 output:
   - platform: gpio
     pin: GPIO4
     id: relay_1
 
-switch:
-  - platform: output
+light:
+  - platform: binary
     name: Cisterna
     id: light_1
     output: relay_1
@@ -76,3 +76,6 @@ status_led:
   pin:
     number: GPIO6
     inverted: yes  
+
+web_server:
+  port: 80

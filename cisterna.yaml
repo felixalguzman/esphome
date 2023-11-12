@@ -70,6 +70,7 @@ light:
     name: Light
     id: light_1
     output: relay_1
+    icon: mdi:water-pump
 
 status_led:
   pin:

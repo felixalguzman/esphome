@@ -38,28 +38,53 @@ wifi:
 
 captive_portal:
 
+# The door contact sensor that is attached to Sonoff. 
+# Not exposed to HA, instead used to set the 
+# state of the cover.
 binary_sensor:
   - platform: gpio
-    pin:
-      number: GPIO9
-      mode:
-        input: true
-        pullup: true
-      inverted: true
-    id: button_1
-    on_press:
-      then:
-        - switch.toggle: relay
+    pin: GPIO9
+    name: "Garage Door Contact Sensor"
+    id: contact_sensor
+    internal: true
+    filters:
+      - invert:
+      # Debounce the contact sensor to prevent rapid on/off/on events
+      - delayed_on_off: 500ms
+      
+# This creates the actual garage door in HA. The state is based
+# on the contact sensor. Opening/closing the garage door simply
+# turns the relay on/off with a 0.5s delay in between.
+cover:
+  - platform: template
+    device_class: garage
+    name: "Garage Door"
+    id: template_cov
+    lambda: |-
+      if (id(contact_sensor).state) {
+        return COVER_OPEN;
+      } else {
+        return COVER_CLOSED;
+      }
+    open_action:
+      - switch.turn_on: relay
+      - delay: 0.5s
+      - switch.turn_off: relay
+    close_action:
+      - switch.turn_on: relay
+      - delay: 0.5s
+      - switch.turn_off: relay
 
 switch:
   - platform: gpio
     pin: 04
     id: relay
     name: "Gate Remote"
-    icon: "mdi:gate"
-    on_turn_on:
-    - delay: 500ms
-    - switch.turn_off: relay
+    # icon: "mdi:gate"
+    internal: true
+    # on_turn_on:
+    #   - delay: 500ms
+    #   - switch.turn_off: relay
 
 # light:
 #   - platform: binary
@@ -67,10 +92,24 @@ switch:
 #     id: light_1
 #     output: relay_1
 
-# status_led:
-#   pin:
-#     number: GPIO6
-#     inverted: yes
+status_led:
+  pin:
+    number: GPIO6
+    inverted: yes
+
+# Send IP Address to HA
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      name: $friendly_name IP Address
+
+# Send WiFi signal strength & uptime to HA
+sensor:
+  - platform: wifi_signal
+    name: $friendly_name WiFi Strength
+    update_interval: 60s
+  - platform: uptime
+    name: $friendly_name "Uptime"
 
 web_server:
   port: 80

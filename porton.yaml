@@ -3,8 +3,7 @@ esphome:
   friendly_name: porton
   platformio_options:
     board_build.mcu: esp32c3
-    board_build.variant: esp32c3  
-
+    board_build.variant: esp32c3
 
 esp32:
   variant: ESP32C3
@@ -14,9 +13,8 @@ esp32:
     sdkconfig_options:
       # CONFIG_BT_BLE_50_FEATURES_SUPPORTED: y
       # CONFIG_BT_BLE_42_FEATURES_SUPPORTED: y
-      CONFIG_ESP_TASK_WDT_TIMEOUT_S: "10"    
+      CONFIG_ESP_TASK_WDT_TIMEOUT_S: "10"
 # Would not boot with the stock ESP32-C3 ESPHome 2023.9 default YAML config until I added/change the settings above for ESP32C3
-
 
 # Enable logging
 logger:
@@ -39,7 +37,6 @@ wifi:
     password: "6ETvknRSYcQo"
 
 captive_portal:
-    
 
 binary_sensor:
   - platform: gpio
@@ -52,20 +49,28 @@ binary_sensor:
     id: button_1
     on_press:
       then:
-        - light.toggle: light_1
+        - switch.toggle: relay
 
-output:
+switch:
   - platform: gpio
-    pin: GPIO4
-    id: relay_1
+    pin: 04
+    id: relay
+    name: "Gate Remote"
+    icon: "mdi:gate"
+    on_turn_on:
+    - delay: 500ms
+    - switch.turn_off: relay
 
-light:
-  - platform: binary
-    name: Light
-    id: light_1
-    output: relay_1
+# light:
+#   - platform: binary
+#     name: Light
+#     id: light_1
+#     output: relay_1
 
-status_led:
-  pin:
-    number: GPIO6
-    inverted: yes  
+# status_led:
+#   pin:
+#     number: GPIO6
+#     inverted: yes
+
+web_server:
+  port: 80

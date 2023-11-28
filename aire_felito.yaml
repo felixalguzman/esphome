@@ -101,10 +101,18 @@ remote_transmitter:
 #   rmt_channel: 4
 #   dump: coolix
 
+# Example configuration entry
+sensor:
+  - platform: homeassistant
+    id: current_temperature
+    entity_id: sensor.h5102_4e54_temperature
+    # attribute: temperature
+
 climate:
   - platform: coolix # adjust to match your AC unit!\
     id: "aire"
     name: "Aire Felito"
+    sensor: current_temperature
     on_state:
       - lambda: |-
           if (x.mode != CLIMATE_MODE_OFF) {

@@ -1,11 +1,23 @@
 esphome:
   name: home-theather
   friendly_name: home_theather
+  project:
+    name: m5stack.atom-speaker-kit
+    version: "1.0"
 
 esp32:
   board: esp32-s3-devkitc-1
   framework:
     type: arduino
+    # sdkconfig_options:
+    #   CONFIG_ESP32S3_DEFAULT_CPU_FREQ_240: "y"
+    #   CONFIG_ESP32S3_DATA_CACHE_64KB: "y"
+    #   CONFIG_ESP32S3_DATA_CACHE_LINE_64B: "y"
+
+# esp32:
+#   board: m5stack-atom
+#   framework:
+#     type: arduino
 
 # Enable logging
 logger:
@@ -27,27 +39,43 @@ wifi:
     ssid: "Home-Theather Fallback Hotspot"
     password: "GkJXPwcppsfs"
 
+
+dashboard_import:
+  package_import_url: github://esphome/firmware/media-player/m5stack-atom-speaker-kit.yaml@main
+
+improv_serial:
+
 captive_portal:
 
-external_components:
-  - source: github://Jorre05/remote_receiver
-    components: [remote_receiver]
+i2s_audio:
+  - i2s_lrclk_pin: GPIO39
+    i2s_bclk_pin: GPIO5
 
-remote_receiver:
-  pin:
-    number: GPIO1
-    inverted: true
-  rmt_channel: 4
-  dump: all
+media_player:
+  - platform: i2s_audio
+    id: media_out
+    name: None
+    dac_type: external
+    i2s_dout_pin: GPIO38
+    mode: mono
 
-remote_transmitter:
-  pin: GPIO2
-  carrier_duty_percent: 50%
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO41
+      inverted: true
+    name: Button
+    on_click:
+      - media_player.toggle: media_out
 
-switch:
-  - platform: template
-    name: "Home Theather"
-    turn_on_action:
-      remote_transmitter.transmit_rc6:
-        address: 0x1F
-        command: 0x3F
+# light:
+#   - platform: fastled_clockless
+#     name: None
+#     pin: GPIO35
+#     chipset: SK6812
+#     num_leds: 1
+#     rgb_order: grb
+
+
+web_server:
+  port: 80

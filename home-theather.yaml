@@ -9,15 +9,18 @@ esp32:
   board: esp32-s3-devkitc-1
   framework:
     type: arduino
-    # sdkconfig_options:
-    #   CONFIG_ESP32S3_DEFAULT_CPU_FREQ_240: "y"
-    #   CONFIG_ESP32S3_DATA_CACHE_64KB: "y"
-    #   CONFIG_ESP32S3_DATA_CACHE_LINE_64B: "y"
 
 # esp32:
-#   board: m5stack-atom
+#   board: esp32-c3-devkitm-1
 #   framework:
-#     type: arduino
+#     type: esp-idf
+#     version: recommended
+#     # Custom sdkconfig options
+#     sdkconfig_options:
+#       COMPILER_OPTIMIZATION_SIZE: y
+#     # Advanced tweaking options
+#     advanced:
+#       ignore_efuse_mac_crc: false
 
 # Enable logging
 logger:
@@ -39,13 +42,24 @@ wifi:
     ssid: "Home-Theather Fallback Hotspot"
     password: "GkJXPwcppsfs"
 
-
 dashboard_import:
   package_import_url: github://esphome/firmware/media-player/m5stack-atom-speaker-kit.yaml@main
 
 improv_serial:
 
 captive_portal:
+
+esp32_ble_tracker:
+  scan_parameters:
+    # We currently use the defaults to ensure Bluetooth
+    # can co-exist with WiFi In the future we may be able to
+    # enable the built-in coexistence logic in ESP-IDF
+    interval: 1100ms
+    window: 1100ms
+    active: true
+
+bluetooth_proxy:
+  active: true
 
 i2s_audio:
   - i2s_lrclk_pin: GPIO39
@@ -59,6 +73,54 @@ media_player:
     i2s_dout_pin: GPIO38
     mode: mono
 
+output:
+  - platform: template
+    id: status_output
+    type: binary
+    write_action:
+    - if:
+        condition:
+          lambda: return (state);
+        then:
+          - light.turn_on:
+              id: led
+              brightness: 70%
+              red: 100%
+              green: 0%
+              blue: 0%
+        else:
+          - light.turn_off: led
+
+light:
+  # Enable status LED
+  - platform: status_led
+    output: status_output
+    name: "Led"
+    internal: True
+
+  #G35=RGB WS2812C-2020
+  - platform: esp32_rmt_led_strip
+    rgb_order: GRB
+    pin: 35
+    num_leds: 4
+    # RMT 0 channels will be occupied by IR
+    rmt_channel: 1
+    chipset: ws2812
+    id: led
+    name: "Led"
+# light:
+#   - platform: fastled_clockless
+#     chipset: WS2812B
+#     pin: 35
+#     num_leds: 1
+#     rgb_order: GRB
+#     id: status_led
+#     name: ${friendly_name} RGB LED
+#     effects:
+#       - random:
+#       - flicker:
+#       - addressable_rainbow:
+
 binary_sensor:
   - platform: gpio
     pin:
@@ -67,15 +129,7 @@ binary_sensor:
     name: Button
     on_click:
       - media_player.toggle: media_out
-
-# light:
-#   - platform: fastled_clockless
-#     name: None
-#     pin: GPIO35
-#     chipset: SK6812
-#     num_leds: 1
-#     rgb_order: grb
-
+      - light.toggle: led
 
 web_server:
   port: 80

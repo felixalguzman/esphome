@@ -28,8 +28,8 @@ wifi:
 
 
 esp32:
-  variant: ESP32C3
-  board: esp32dev
+  variant: esp32c3
+  board: esp32-c3-devkitm-1
   framework:
     type: esp-idf
     sdkconfig_options:
